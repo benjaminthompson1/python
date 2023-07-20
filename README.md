@@ -23,4 +23,10 @@ Each script in this repository serves a different purpose. Here is how to run a 
 2. Make sure the script has execute permissions.
 3. Run the script with the necessary command-line arguments. For example, if you're running a script that requires two datasets, you can use:
 ```bash
-./script.py DATASET1 DATASET2
+python3 script.py DATASET1 DATASET2
+
+## Scripts
+copy_dataset.py: This script copies the contents of one dataset to another.
+
+## Contributing
+Contributions to this repository are welcome! If you have a bug to report or an enhancement to suggest, feel free to open an issue. If you have a contribution to make, feel free to create a pull request.
