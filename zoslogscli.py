@@ -9,6 +9,7 @@ import logging
 import gzip
 import bz2
 
+sys.path.insert(0, '/u/ibmuser/.local/bin')
 from src.zoslogs import zoslogs
 
 
