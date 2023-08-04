@@ -3,15 +3,14 @@
 """Console script for zoslogs."""
 import argparse
 import sys
+sys.path.insert(0, '/u/ibmuser/.local/bin')
 
 import logging
 
 import gzip
 import bz2
 
-sys.path.insert(0, '/u/ibmuser/.local/bin')
 from src.zoslogs import zoslogs
-
 
 def open_by_suffix(filename):
     if filename.endswith('.gz'):
