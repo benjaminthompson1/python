@@ -9,8 +9,8 @@ import logging
 import gzip
 import bz2
 
-import zoslogs
-print(dir(zoslogs))
+from src.zoslogs import zoslogs
+
 
 def open_by_suffix(filename):
     if filename.endswith('.gz'):
