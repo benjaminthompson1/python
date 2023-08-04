@@ -3,7 +3,7 @@
 """Console script for zoslogs."""
 import argparse
 import sys
-sys.path.insert(0, '/u/ibmuser/zGit-Repositories/python/zoslogs')
+sys.path.insert(0, '/u/ibmuser/.local/bin')
 
 import logging
 
