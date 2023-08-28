@@ -8,7 +8,7 @@ import zoautil_py.datasets as datasets
 # parameters: The parameters for the operator command (e.g., "iplinfo")
 
 # Example usage:
-# python operator_command.py d iplinfo
+# python3 operator_command.py d iplinfo
 
 # Get the command and parameters from command line arguments
 command = sys.argv[1]
