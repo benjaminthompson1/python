@@ -3,9 +3,10 @@ import sys
 import zoautil_py.opercmd as opercmd
 import zoautil_py.datasets as datasets
 
-# This script takes two command line arguments: command and parameters
-# command: The operator command you want to issue (e.g., "d")
-# parameters: The parameters for the operator command (e.g., "iplinfo")
+# This script issues an operator command in a z/OS environment using the zoautil_py package.
+# It takes two command line arguments:
+# - command: The operator command to be issued (e.g., "d")
+# - parameters: The parameters for the operator command (e.g., "iplinfo")
 
 # Example usage:
 # python3 operator_command.py d iplinfo
@@ -14,15 +15,17 @@ import zoautil_py.datasets as datasets
 command = sys.argv[1]
 parameters = sys.argv[2]
 
-# Issue an operator command
-# opercmd.execute method is used to issue operator commands.
-# command: The operator command to be issued
-# parameters: The parameters for the operator command
-# terse: A boolean value that indicates whether the response should be in terse mode or not.
+# Issue an operator command using the zoautil_py.opercmd module.
+# - command: The operator command to be issued.
+# - parameters: The parameters for the operator command.
+# - terse: A boolean value that indicates whether the response should be in terse mode or not.
 response = opercmd.execute(command=command, parameters=parameters, terse=True)
 
+# Print the response details
 print("Return Code:", response.rc)
-print(dir(response))
+print(dir(response))  # List all attributes and methods of the response object
 print("Standard Output:", response.stdout_response)
 print("Standard Error:", response.stderr_response)
+
+# Print the High-Level Qualifier (HLQ) of the current user.
 print("High-Level Qualifier:", datasets.hlq())
