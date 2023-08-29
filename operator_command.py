@@ -22,7 +22,7 @@ parameters = sys.argv[2]
 response = opercmd.execute(command=command, parameters=parameters, terse=True)
 
 print("Return Code:", response.rc)
-print("Standard Output:", response.stdout)
+print(dir(response))
 
 # Print the high-level qualifier
 # datasets.hlq method is used to get the high-level qualifier (HLQ) of the current user.
