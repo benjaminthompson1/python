@@ -13,7 +13,7 @@ This repository contains Python programs designed specifically for z/OS environm
 ## Prerequisites
 
 - Python 3 installed on z/OS.
-- Access to z/OS system and necessary permissions to interact with z/OS datasets.
+- IBM Z Open Automation Utilities installed on z/OS.
 
 ## Usage
 
