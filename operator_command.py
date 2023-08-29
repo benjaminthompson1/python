@@ -23,7 +23,6 @@ response = opercmd.execute(command=command, parameters=parameters, terse=True)
 
 print("Return Code:", response.rc)
 print(dir(response))
-
-# Print the high-level qualifier
-# datasets.hlq method is used to get the high-level qualifier (HLQ) of the current user.
+print("Standard Output:", response.stdout_response)
+print("Standard Error:", response.stderr_response)
 print("High-Level Qualifier:", datasets.hlq())
