@@ -21,9 +21,10 @@ parameters = sys.argv[2]
 # terse: A boolean value that indicates whether the response should be in terse mode or not.
 response = opercmd.execute(command=command, parameters=parameters, terse=True)
 
-# Print the response
-# response.rc will give the return code of the operator command issued.
 print("Return Code:", response.rc)
+print("Reason Code:", response.rsn)
+print("Standard Output:", response.stdout)
+print("Standard Error:", response.stderr)
 
 # Print the high-level qualifier
 # datasets.hlq method is used to get the high-level qualifier (HLQ) of the current user.
