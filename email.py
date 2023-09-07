@@ -53,7 +53,6 @@ email_lists = {
         'Tony.Huynh@ato.gov.au',
         'Owen.Davies@ato.gov.au',
         'Lachlan.McKenzie@ato.gov.au',
-        'Aaron.Draper@ato.gov.au',
         'Ben.Coffison@ato.gov.au',
         'Shane.Bazin@ato.gov.au',
         'Marta.Peemoeller@ato.gov.au',
