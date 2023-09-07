@@ -40,7 +40,8 @@ email_lists = {
     ],
     'AEC': [
         'Christine.Joy@aec.gov.au',
-        'Mike.Nielsen@aec.gov.au','Sandy.Lambe@aec.gov.au'
+        'Mike.Nielsen@aec.gov.au',
+        'Sandy.Lambe@aec.gov.au'
     ],
     'ATO': [
         'Michael.Edmondson@ato.gov.au',
@@ -93,12 +94,13 @@ email_lists = {
         'John.McAskill@nt.gov.au',
         'Elizabeth.Shenton@nt.gov.au',
         'aaron.hay@nt.gov.au',
-        'Tina.Sacca@nt.gov.au',
+        'priya.davey@nt.gov.au',
         'Angelito.Lontoc@nt.gov.au',
         'Harita.Lingamaneni@nt.gov.au',
         'Gilbert.Simpkins@nt.gov.au',
         'Chai.Barretto@nt.gov.au',
-        'Julius.Marbella@nt.gov.au'
+        'Julius.Marbella@nt.gov.au',
+        'sai.paravastu@nt.gov.au'
     ],
     'ServicesAustralia': [
         'rick.whittle@servicesaustralia.gov.au',
@@ -142,19 +144,33 @@ email_lists = {
 }
 
 # Define the subject and body of the email
-subject = 'September 2023 Webinar Calendar: z/OS Academy APAC Edition'
+subject = 'Join us for the IBM Z Technical Team''s zSystems Forum Events - Face-to-Face in 6 Locations!'
 body = '''
 {additional_text}
-Good morning,
-We are excited to share the calendar for the upcoming z/OS Academy APAC Edition webinars in September 2023. This month, we have four live presentations that we believe will provide valuable insights and knowledge to you and your team.
+Good afternoon,
+We're thrilled to announce the return of the IBM Z Technical Team's zSystems Forum Events, taking place from October 2nd to October 13th, 2023, in 6 locations across Australia and ASEAN. This year, we're excited to host the events face-to-face, providing an excellent opportunity to connect with industry experts and like-minded professionals.
 
-Please share this information with your teammates and others interested in IBM System Z.
+The event details are as follows:
 
-Additionally, detailed information about the webinars, including the topics, speakers, and registration links, can be found in the attached PDF September 2023 newsletter.
+* Dates: October 2nd - October 13th, 2023
+* Locations: Sydney, Melbourne, Brisbane, Perth, Singapore, and Kuala Lumpur
+* Event Type: Full-day event
+* Session Tracks:
+	1. Infrastructure
+	2. Modernization: Data & AI
+	3. DevOps and AIOps
+* Number of Sessions: 16
+* Registration: Please register for your chosen location and indicate your preferred stream.
 
-Thank you for your continued support and engagement with the IBM Z community.
+To view the invitation and session details, click here [insert link to the invitation document].
 
-Best Regards,
+We've designed this event to help organisations like yours modernize applications and enhance end-user experiences. Don't miss this opportunity to learn from industry experts, network with peers, and explore the latest solutions from IBM Z.
+
+If you have any questions or need assistance with registration, please don't hesitate to reach out to me directly. Feel free to share this invitation with colleagues who may also benefit from attending.
+
+We''re looking forward to seeing you at one of our zSystems Forum Events!
+
+Best regards,
 
 Ben Thompson
 Advisory zStack Client Architect
@@ -162,7 +178,7 @@ Phone: 0439 032 104
 E-mail: benjamin.thompson1@ibm.com
 '''
 # Define the list of attachments
-attachments = ['C:\\Users\\ZZ02Z5616\\Downloads\\zOS Academy newsletter 2023 - Sep.pdf']
+attachments = ['C:\\Users\\ZZ02Z5616\\Downloads\\IBM zForum October 2023 Invitation.pdf']
 
 # Send a test email to 'TEST'
 company = 'TEST'
