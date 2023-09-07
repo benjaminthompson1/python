@@ -59,7 +59,7 @@ email_lists = {
         'John.Carter@ato.gov.au'
     ],
     'DFAT': [
-        'Tony.O''Sullivan@dfat.gov.au',
+        "Tony.O'Sullivan@dfat.gov.au",
         'Stephen.Yost@dfat.gov.au'
     ],
     'DXC': [
@@ -161,13 +161,13 @@ The event details are as follows:
 * Number of Sessions: 16
 * Registration: Please register for your chosen location and indicate your preferred stream.
 
-To view the invitation and session details, click here [insert link to the invitation document].
+To view the invitation and session details, click within the attachment.
 
 We've designed this event to help organisations like yours modernize applications and enhance end-user experiences. Don't miss this opportunity to learn from industry experts, network with peers, and explore the latest solutions from IBM Z.
 
 If you have any questions or need assistance with registration, please don't hesitate to reach out to me directly. Feel free to share this invitation with colleagues who may also benefit from attending.
 
-We''re looking forward to seeing you at one of our zSystems Forum Events!
+We're looking forward to seeing you at one of our zSystems Forum Events!
 
 Best regards,
 
