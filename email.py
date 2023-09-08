@@ -130,7 +130,7 @@ email_lists = {
         'john.hosking@isi.com.au',
         'Mladen.Ervacanin@isi.com.au',
         'Nenad.Vasiljevic@isi.com.au',
-        'josh.cukurins@defence.gov.au'
+        'joshua.cukurins@isi.com.au'
     ],
     'IBM':[
         'pgovend@au1.ibm.com',
