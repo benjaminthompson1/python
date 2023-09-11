@@ -1,6 +1,19 @@
 import win32com.client
 import time
 import os
+import json
+
+# Ask the user for the JSON file name/path and load the email lists
+json_file_name = input("Please enter the JSON file name (or path) containing the email lists: ")
+try:
+    with open(json_file_name, 'r') as file:
+        email_lists = json.load(file)
+except FileNotFoundError as e:
+    print(f"Could not find the JSON file: {e}")
+    exit(1)
+except json.JSONDecodeError as e:
+    print(f"Failed to decode JSON file: {e}")
+    exit(1)
 
 # Define a function to send an email with optional attachments and a specified number of retries
 def send_email(to, subject, body, company, attachments=None, retries=3):
@@ -31,116 +44,6 @@ def send_email(to, subject, body, company, attachments=None, retries=3):
                 print(f"An error occurred: {e}. Retrying...")
         else:
             raise Exception(f"Failed to send email to {recipient} after {retries} retries")
-
-# Define the list of companies and their respective email addresses
-email_lists = {
-    'TEST': [
-        'benjamin.thompson1@ibm.com',
-        'benjaminthompson.au@gmail.com',
-    ],
-    'AEC': [
-        'Christine.Joy@aec.gov.au',
-        'Mike.Nielsen@aec.gov.au',
-        'Sandy.Lambe@aec.gov.au'
-    ],
-    'ATO': [
-        'Michael.Edmondson@ato.gov.au',
-        'Michael.Wade@ato.gov.au',
-        'Samir.Mathur@ato.gov.au',
-        'Chandima.DeSilva@ato.gov.au',
-        'Richard.Baker@ato.gov.au',
-        'Sameer.Gaur@ato.gov.au',
-        'Tony.Huynh@ato.gov.au',
-        'Owen.Davies@ato.gov.au',
-        'Lachlan.McKenzie@ato.gov.au',
-        'Ben.Coffison@ato.gov.au',
-        'Shane.Bazin@ato.gov.au',
-        'Marta.Peemoeller@ato.gov.au',
-        'John.Carter@ato.gov.au'
-    ],
-    'DFAT': [
-        "Tony.O'Sullivan@dfat.gov.au",
-        'Stephen.Yost@dfat.gov.au'
-    ],
-    'DXC': [
-        'Stephen.Mallett@dxc.com',
-        'rslater@dxc.com',
-        'Sam.Arnold@ato.gov.au'
-    ],
-    'HomeAffairs': [
-        'Aldred.Gonzalez@homeaffairs.gov.au',
-        'Aaron.Tully@homeaffairs.gov.au',
-        'Mark.Boddy@homeaffairs.gov.au',
-        'Douglas.Lean@homeaffairs.gov.au',
-        'Michael.Fawke@homeaffairs.gov.au',
-        'Chris.Tullis@homeaffairs.gov.au',
-        'Simon.Kneebone@homeaffairs.gov.au',
-        'Luis.Monge@homeaffairs.gov.au'
-    ],
-    'NTG': [
-        'andrew.krink@nt.gov.au',
-        'Campbell.Marshall@nt.gov.au',
-        'Shane.Harrison@nt.gov.au',
-        'heath.dewson@nt.gov.au',
-        'Patrick.Welsh@nt.gov.au',
-        'Haydn.Russell@nt.gov.au',
-        'Roger.Lowe@nt.gov.au',
-        'John.Yorke-Barber@nt.gov.au',
-        'Elina.Woolley@nt.gov.au',
-        'Anthony.Thompson@nt.gov.au',
-        'Patrick.yeung@nt.gov.au',
-        'Ross.Maddock@nt.gov.au',
-        'John.McAskill@nt.gov.au',
-        'Elizabeth.Shenton@nt.gov.au',
-        'aaron.hay@nt.gov.au',
-        'priya.davey@nt.gov.au',
-        'Angelito.Lontoc@nt.gov.au',
-        'Harita.Lingamaneni@nt.gov.au',
-        'Gilbert.Simpkins@nt.gov.au',
-        'Chai.Barretto@nt.gov.au',
-        'Julius.Marbella@nt.gov.au',
-        'sai.paravastu@nt.gov.au'
-    ],
-    'ServicesAustralia': [
-        'rick.whittle@servicesaustralia.gov.au',
-        'Graeme.Whitfield@servicesaustralia.gov.au',
-        'Glenda.Coffey@servicesaustralia.gov.au',
-        'Steffen.Moebus@servicesaustralia.gov.au',
-        'Peter.Daley@servicesaustralia.gov.au',
-        'Gary.Allardyce@servicesaustralia.gov.au',
-        'tariq.tarbuck2@servicesaustralia.gov.au',
-        'sharon.grant2@servicesaustralia.gov.au',
-        'Goff.Cureton@servicesaustralia.gov.au',
-        'kylie.miles@servicesaustralia.gov.au',
-        'Alan.Smith@servicesaustralia.gov.au',
-        'Graham.Achilles@servicesaustralia.gov.au',
-        'Glenda.Ozolins@servicesaustralia.gov.au',
-        'Sadaf.Irfan@servicesaustralia.gov.au>',
-        'peter.cottrell@servicesaustralia.gov.au',
-        'Clayton.Mumford@servicesaustralia.gov.au',
-        'Robert.Mills@servicesaustralia.gov.au',
-        'Craig.mckellar2@servicesaustralia.gov.au',
-        'frank.wallace@servicesaustralia.gov.au',
-        'ted.hempstead@servicesaustralia.gov.au'
-    ],
-    'ISI': [
-        'Josh.Stewart@isi.com.au',
-        'MikeU@isi.com.au',
-        'Lindsay.Oxenham@isi.com.au',
-        'john.hosking@isi.com.au',
-        'Mladen.Ervacanin@isi.com.au',
-        'Nenad.Vasiljevic@isi.com.au',
-        'joshua.cukurins@isi.com.au'
-    ],
-    'IBM':[
-        'pgovend@au1.ibm.com',
-        'iannobbs@au1.ibm.com',
-        'Thanh.N@ibm.com',
-        'jaysen@au1.ibm.com',
-        'graeme.muddle@au1.ibm.com'
-    ],
-    # add more companies and emails as needed
-}
 
 # Define the subject and body of the email
 subject = 'Join us for the IBM Z Technical Team''s zSystems Forum Events - Face-to-Face in 6 Locations!'
