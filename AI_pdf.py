@@ -4,6 +4,7 @@ from genai.extensions.langchain import LangChainInterface
 from genai.schemas import GenerateParams
 from genai.credentials import Credentials
 from langchain.document_loaders import PyPDFLoader
+from pptx import Presentation
 
 def setup_genai_credentials():
     load_dotenv()
@@ -19,9 +20,7 @@ def setup_genai_credentials():
 def extract_text_from_pdf(pdf_path):
     loader = PyPDFLoader(pdf_path)
     pdf_content = loader.load()
-
     try:
-        # Assuming 'page_content' is the correct attribute to access the PDF content
         return ' '.join([doc.page_content for doc in pdf_content])
     except AttributeError as e:
         print("Error: Failed to extract text from the Document objects.")
@@ -29,18 +28,39 @@ def extract_text_from_pdf(pdf_path):
         print(f"Available attributes/methods: {available_attributes}")
         exit()
 
+def extract_text_from_powerpoint(ppt_path):
+    prs = Presentation(ppt_path)
+    text = ""
+    for slide in prs.slides:
+        for shape in slide.shapes:
+            if hasattr(shape, "text"):
+                text += shape.text + " "
+    return text.strip()
+
+def extract_text_from_document(file_path):
+    file_extension = os.path.splitext(file_path)[1].lower()
+    if file_extension == '.pdf':
+        return extract_text_from_pdf(file_path)
+    elif file_extension in ['.ppt', '.pptx']:
+        return extract_text_from_powerpoint(file_path)
+    else:
+        print(f"Unsupported file format: {file_extension}")
+        exit()
+
 def interact_with_user(extracted_text, langchain_model):
     MAX_TOKENS = 1500
 
+    print("\n---------- Ask questions about the document ----------\n")
+
     while True:
-        question = input("Ask a question about the PDF (or type 'exit' to quit): ")
+        question = input("Ask a question about the PDF or PowerPoint (or type 'exit' to quit): ")
         if question.lower() == 'exit':
             break
         
         tokens = extracted_text.split()  # Simple tokenization
         truncated_content = ' '.join(tokens[-MAX_TOKENS:])
 
-        context_question = f"Based on this content from the PDF: {truncated_content}\n{question}"
+        context_question = f"Based on this content from the document: {truncated_content}\n{question}"
         response = langchain_model(context_question)
         print(f"Answer: {response}\n")
 
@@ -48,15 +68,15 @@ def main():
     print("\n------------- Example (LangChain)-------------\n")
     creds = setup_genai_credentials()
 
-    pdf_path = input("Enter the path to the PDF file: ")
-    extracted_text = extract_text_from_pdf(pdf_path)
+    file_path = input("Enter the path to the PDF or PowerPoint file: ")
+    extracted_text = extract_text_from_document(file_path)
 
-    # Ask the user if they want to view the PDF content
-    view_content = input("Would you like to view the contents of the PDF? (yes/no): ").lower()
+    # Ask the user if they want to view the document content
+    view_content = input("Would you like to view the contents of the document? (yes/no): ").lower()
     if view_content == "yes":
-        print("\n------ Begin PDF Content ------\n")
+        print("\n------ Begin Document Content ------\n")
         print(extracted_text)
-        print("\n------ End PDF Content ------\n")
+        print("\n------ End Document Content ------\n")
 
     print("Using GenAI Model expressed as LangChain Model via LangChainInterface:")
     params = GenerateParams(decoding_method="greedy")
