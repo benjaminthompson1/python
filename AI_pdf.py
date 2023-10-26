@@ -6,7 +6,7 @@ from genai.credentials import Credentials
 from langchain.document_loaders import PyPDFLoader
 from pptx import Presentation
 
-MAX_TOKENS = 1500
+MAX_TOKENS = 4096
 
 def setup_genai_credentials():
     load_dotenv()
