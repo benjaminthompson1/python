@@ -1,25 +1,25 @@
 import struct
 
-# Define constants for record types
+# Define constants for record types, assuming these short codes are in EBCDIC and need conversion
 RECORD_TYPES = {
-    'D ': 'ACTIVE DATA SET INFORMATION',
-    'A ': 'VSAM BASE CLUSTER ASSOCIATION INFORMATION',
-    'V ': 'VOLUME INFORMATION',
-    'M ': 'MIGRATED DATA SET INFORMATION',
-    'B ': 'BACKUP DATA SET INFORMATION',
-    'C ': 'DASD CAPACITY PLANNING INFORMATION',
-    'T ': 'TAPE CAPACITY PLANNING INFORMATION',
-    'DC': 'DATA CLASS CONSTRUCT DEFINITION',
-    'SC': 'STORAGE CLASS CONSTRUCT DEFINITION',
-    'MC': 'MANAGMENT CLASS CONSTRUCT DEFINITION',
-    'SG': 'STORAGE GROUP CONSTRUCT DEFINITION',
-    'VL': 'SMS VOLUME DEFINITION',
-    'BC': 'BASE CONFIGURATION DEFINITION',
-    'AG': 'AGGREGATE GROUP DEFINITION',
-    'DR': 'OPTICAL DRIVE DEFINITION',
-    'LB': 'OPTICAL LIBRARY DEFINITION',
-    'CN': 'CACHE NAMES DEFINITION',
-    'AI': 'ACCOUNTING INFORMATION DEFINITION',
+    b'\xc4@': 'ACTIVE DATA SET INFORMATION',          # 'D '
+    b'\xc1@': 'VSAM BASE CLUSTER ASSOCIATION INFORMATION',  # 'A '
+    b'\xe5@': 'VOLUME INFORMATION',                  # 'V '
+    b'\xd4@': 'MIGRATED DATA SET INFORMATION',       # 'M '
+    b'\xc2@': 'BACKUP DATA SET INFORMATION',         # 'B '
+    b'\xc3@': 'DASD CAPACITY PLANNING INFORMATION',  # 'C '
+    b'\xe3@': 'TAPE CAPACITY PLANNING INFORMATION',  # 'T '
+    b'\xc4\xc3': 'DATA CLASS CONSTRUCT DEFINITION',  # 'DC'
+    b'\xe2\xc3': 'STORAGE CLASS CONSTRUCT DEFINITION',  # 'SC'
+    b'\xd4\xc3': 'MANAGMENT CLASS CONSTRUCT DEFINITION',  # 'MC'
+    b'\xe2\x87': 'STORAGE GROUP CONSTRUCT DEFINITION',    # 'SG'
+    b'\xe5\xd4': 'SMS VOLUME DEFINITION',            # 'VL'
+    b'\xc2\xc3': 'BASE CONFIGURATION DEFINITION',    # 'BC'
+    b'\xc1\x87': 'AGGREGATE GROUP DEFINITION',       # 'AG'
+    b'\xc4\xd9': 'OPTICAL DRIVE DEFINITION',         # 'DR'
+    b'\xd3\x82': 'OPTICAL LIBRARY DEFINITION',       # 'LB'
+    b'\xc3\xd5': 'CACHE NAMES DEFINITION',           # 'CN'
+    b'\xc1\xc9': 'ACCOUNTING INFORMATION DEFINITION', # 'AI'
 }
 
 def read_header(file):
@@ -44,25 +44,24 @@ def read_header(file):
 
     # Process each field in the header
     try:
+        # Decoding EBCDIC character fields using code page 037
         dcu_length, dcu_rctype, dcu_vers, dcu_sysid = struct.unpack('>2x2s2s4s', record_data[0:10])
+        record_type = dcu_rctype.decode('cp037')
+        system_id = dcu_sysid.decode('cp037')
+        version = int.from_bytes(dcu_vers, byteorder='big', signed=False)
+
+        # Translate record type
+        record_type_description = RECORD_TYPES.get(record_type.encode('cp037'), 'UNKNOWN')
     except struct.error:
         return None  # Unable to unpack the data, possibly due to an incomplete record
-
-    # Convert record type, system ID, and version
-    record_type = dcu_rctype.decode('utf-8', errors='ignore')
-    system_id = dcu_sysid.decode('utf-8', errors='ignore')
-    version = int.from_bytes(dcu_vers, byteorder='big', signed=False)
-
-    # Translate record type
-    record_type_description = RECORD_TYPES.get(record_type, 'UNKNOWN')
 
     # Return a dictionary of the header fields
     return {
         'length': length,
-        'record_type': record_type,
+        'record_type': record_type.strip(),
         'record_type_description': record_type_description,
         'version': version,
-        'system_id': system_id,
+        'system_id': system_id.strip(),
     }
 
 # Prompt user for the DCOLLECT dataset file path
