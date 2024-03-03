@@ -53,11 +53,13 @@ def read_header(file):
         'record_type_description': record_type_description,
         'version': version,
         'system_id': system_id,
-        # The timestamp requires more sophisticated decoding if needed.
+        # More decoding could be added for timestamp and other fields as needed.
     }
 
-# Example usage
-file_path = 'your_dataset.dcollect'
+# Prompt user for the DCOLLECT dataset file path
+file_path = input("Please enter the path to the DCOLLECT dataset file: ")
+
+# Process the specified file
 with open(file_path, 'rb') as file:
     while True:
         header = read_header(file)
