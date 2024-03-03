@@ -25,23 +25,33 @@ RECORD_TYPES = {
 def read_header(file):
     # Read RDW
     rdw = file.read(4)
-    if not rdw:
-        return None  # End of file
+    if not rdw or len(rdw) < 4:
+        return None  # End of file or incomplete RDW
 
     # Unpack RDW to get the length of the record
     (length,) = struct.unpack('>H', rdw[0:2])
 
+    # Check for incomplete file read or end of file
+    if length <= 4:
+        return None
+
     # Read the rest of the record based on the length
     record_data = file.read(length - 4)
 
+    # Ensure we have read the expected amount of data
+    if len(record_data) != length - 4:
+        return None  # Incomplete record
+
     # Process each field in the header
-    dcu_length, dcu_rctype, dcu_vers, dcu_sysid = struct.unpack('>2x2s2s4s', record_data[0:10])
-    dcu_tmstp = record_data[10:18]  # Timestamp is in packed decimal format and needs special handling
+    try:
+        dcu_length, dcu_rctype, dcu_vers, dcu_sysid = struct.unpack('>2x2s2s4s', record_data[0:10])
+    except struct.error:
+        return None  # Unable to unpack the data, possibly due to an incomplete record
 
     # Convert record type, system ID, and version
-    record_type = dcu_rctype.decode('utf-8')
-    system_id = dcu_sysid.decode('utf-8')
-    version = int.from_bytes(dcu_vers, byteorder='big')
+    record_type = dcu_rctype.decode('utf-8', errors='ignore')
+    system_id = dcu_sysid.decode('utf-8', errors='ignore')
+    version = int.from_bytes(dcu_vers, byteorder='big', signed=False)
 
     # Translate record type
     record_type_description = RECORD_TYPES.get(record_type, 'UNKNOWN')
@@ -53,7 +63,6 @@ def read_header(file):
         'record_type_description': record_type_description,
         'version': version,
         'system_id': system_id,
-        # More decoding could be added for timestamp and other fields as needed.
     }
 
 # Prompt user for the DCOLLECT dataset file path
@@ -64,5 +73,5 @@ with open(file_path, 'rb') as file:
     while True:
         header = read_header(file)
         if header is None:
-            break  # End of file reached
+            break  # End of file or incomplete record reached
         print(header)
