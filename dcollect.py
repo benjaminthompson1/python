@@ -2,7 +2,7 @@ import json
 from zoautil_py import datasets
 
 # Read the DCOLLECT dataset
-with datasets.DD(name="IBMUSER.Z31A.DCOLLECT", mode="rb") as infile:
+with datasets.DD(name="IBMUSER.DCOLLECT", mode="rb") as infile:
     dcollect_data = infile.read().decode("utf-8")
 
 # Parse the DCOLLECT data into a list of dictionaries
