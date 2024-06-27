@@ -45,7 +45,7 @@ def process_dcollect(input_file, output_file):
 
 # Main execution
 if __name__ == "__main__":
-    input_file = "/path/to/your/dcollect/dataset"
-    output_file = "/path/to/your/output/json/file"
+    input_file = "/dsfs/txt/IBMUSER/dcollect"
+    output_file = "/u/ibmuser/dcollect.json"
     process_dcollect(input_file, output_file)
     print(f"Conversion complete. JSON data written to {output_file}")
