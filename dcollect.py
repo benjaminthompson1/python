@@ -1,60 +1,28 @@
-# Assisted by WCA@IBM
-# Latest GenAI contribution: ibm/granite-20b-code-instruct-v2
-import struct
-import os
+import json
+from zoautil_py import datasets
 
-def read_dcollect_record(file):
-    # Read record descriptor word (RDW)
-    rdw = file.read(4)
-    if not rdw:
-        return None
-    
-    record_length = struct.unpack('>H', rdw[:2])[0] - 4
-    
-    # Read the rest of the record
-    record = file.read(record_length)
-    
-    return record
+# Read the DCOLLECT dataset
+with datasets.DD(name="IBMUSER.Z31A.DCOLLECT", mode="rb") as infile:
+    dcollect_data = infile.read().decode("utf-8")
 
-def parse_dcollect_record(record):
-    # Parse record based on DCOLLECT format
-    record_type = record[0:1].decode('ascii')
-    
-    if record_type == 'V':  # Volume record
-        volser = record[6:12].decode('ascii').strip()
-        total_space = struct.unpack('>I', record[24:28])[0]
-        free_space = struct.unpack('>I', record[28:32])[0]
-        
-        return f"Volume: {volser}, Total Space: {total_space}, Free Space: {free_space}"
-    
-    elif record_type == 'D':  # Dataset record
-        dsname = record[44:132].decode('ascii').strip()
-        allocated_space = struct.unpack('>I', record[132:136])[0]
-        
-        return f"Dataset: {dsname}, Allocated Space: {allocated_space}"
-    
-    else:
-        return f"Unsupported record type: {record_type}"
+# Parse the DCOLLECT data into a list of dictionaries
+dcollect_records = []
+for line in dcollect_data.splitlines():
+    record = {}
+    # Parse each line and populate the record dictionary
+    # Adjust the parsing logic based on the DCOLLECT output format
+    # Example parsing:
+    record["volume"] = line[0:6].strip()
+    record["unit"] = line[6:10].strip()
+    # ... parse other fields ...
+    dcollect_records.append(record)
 
-def process_dcollect_file(filename):
-    with open(filename, 'rb') as file:
-        while True:
-            record = read_dcollect_record(file)
-            if not record:
-                break
-            
-            parsed_record = parse_dcollect_record(record)
-            write_to_file(parsed_record)
+# Convert the DCOLLECT records to JSON format
+json_data = json.dumps(dcollect_records, indent=2)
 
-def write_to_file(output):
-    # Write output to a file
-    output_file = '/u/ibmuser/output.txt'
-    if not os.path.exists(output_file):
-        with open(output_file, 'w') as file:
-            file.write(output)
-    else:
-        with open(output_file, 'a') as file:
-            file.write('\n' + output)
+# Write the JSON data to a new dataset
+output_dsname = "IBMUSER.DCOLLECT.JSON"
+with datasets.DD(name=output_dsname, mode="wb") as outfile:
+    outfile.write(json_data.encode("utf-8"))
 
-# Usage
-process_dcollect_file('/dsfs/txt/IBMUSER/dcollect')
+print(f"DCOLLECT data converted to JSON and written to dataset: {output_dsname}")
