@@ -27,12 +27,19 @@ def parse_dcollect_record(record_type, record_data):
         'record_type_name': get_record_type_name(record_type)
     }
     
-    if record_type == 0:
-        parsed_record.update(parse_type_0(record_data))
-    elif record_type == 212:
-        parsed_record.update(parse_type_212(record_data))
-    elif record_type == 220:
-        parsed_record.update(parse_type_220(record_data))
+    parse_functions = {
+        0: parse_type_0,
+        212: parse_type_212,
+        220: parse_type_220
+    }
+    
+    parse_function = parse_functions.get(record_type)
+    if parse_function:
+        try:
+            parsed_record.update(parse_function(record_data))
+        except Exception as e:
+            print(f"Error parsing record type {record_type}: {e}")
+            parsed_record['parsing_error'] = str(e)
     else:
         parsed_record['data'] = ebcdic_to_ascii(record_data[1:])
     
@@ -76,30 +83,30 @@ def get_record_type_name(record_type):
 def parse_type_0(record_data):
     # Header record
     return {
-        'system_id': ebcdic_to_ascii(record_data[2:10]).strip(),
-        'time_stamp': struct.unpack('>Q', record_data[10:18])[0],
-        'sms_level': ebcdic_to_ascii(record_data[18:26]).strip()
+        'system_id': ebcdic_to_ascii(record_data[6:14]).strip(),
+        'time_stamp': struct.unpack('>Q', record_data[14:22])[0],
+        'sms_level': ebcdic_to_ascii(record_data[22:30]).strip()
     }
 
 def parse_type_212(record_data):
     # VVDS Information
     return {
-        'volume_serial': ebcdic_to_ascii(record_data[2:8]).strip(),
-        'device_number': ebcdic_to_ascii(record_data[8:14]).strip(),
-        'vvds_name': ebcdic_to_ascii(record_data[14:58]).strip(),
-        'component_code': struct.unpack('>H', record_data[58:60])[0],
-        'number_of_ci': struct.unpack('>I', record_data[60:64])[0],
-        'ci_size': struct.unpack('>H', record_data[64:66])[0]
+        'volume_serial': ebcdic_to_ascii(record_data[6:12]).strip(),
+        'device_number': ebcdic_to_ascii(record_data[12:18]).strip(),
+        'vvds_name': ebcdic_to_ascii(record_data[18:62]).strip(),
+        'component_code': struct.unpack('>H', record_data[62:64])[0],
+        'number_of_ci': struct.unpack('>I', record_data[64:68])[0],
+        'ci_size': struct.unpack('>H', record_data[68:70])[0]
     }
 
 def parse_type_220(record_data):
     # Data Set Backup
     return {
-        'dsname': ebcdic_to_ascii(record_data[2:46]).strip(),
-        'volume_serial': ebcdic_to_ascii(record_data[46:52]).strip(),
-        'backup_version_gen': struct.unpack('>I', record_data[52:56])[0],
-        'backup_version_date': struct.unpack('>I', record_data[56:60])[0],
-        'backup_version_time': struct.unpack('>I', record_data[60:64])[0]
+        'dsname': ebcdic_to_ascii(record_data[6:50]).strip(),
+        'volume_serial': ebcdic_to_ascii(record_data[50:56]).strip(),
+        'backup_version_gen': struct.unpack('>I', record_data[56:60])[0],
+        'backup_version_date': struct.unpack('>I', record_data[60:64])[0],
+        'backup_version_time': struct.unpack('>I', record_data[64:68])[0]
     }
 
 def process_dcollect(input_file, output_file):
