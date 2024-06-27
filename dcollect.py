@@ -1,5 +1,5 @@
-// Assisted by WCA@IBM
-// Latest GenAI contribution: ibm/granite-20b-code-instruct-v2
+# Assisted by WCA@IBM
+# Latest GenAI contribution: ibm/granite-20b-code-instruct-v2
 import struct
 import os
 
