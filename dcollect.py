@@ -2,8 +2,8 @@ import struct
 import json
 import codecs
 
-def ebcdic_to_ascii(ebcdic_string):
-    return codecs.decode(ebcdic_string, 'cp1047')
+def ebcdic_to_ascii(ebcdic_bytes):
+    return codecs.decode(ebcdic_bytes, 'cp1047')
 
 def read_dcollect_record(file):
     # Read record length (first 2 bytes)
@@ -34,7 +34,7 @@ def process_dcollect(input_file, output_file):
             # Simple parsing example - adjust based on actual DCOLLECT record formats
             parsed_record = {
                 'record_type': record_type,
-                'data': ebcdic_to_ascii(record_data[1:].decode('cp1047', errors='ignore'))
+                'data': ebcdic_to_ascii(record_data[1:])  # Remove the .decode() call here
             }
             
             json_data.append(parsed_record)
