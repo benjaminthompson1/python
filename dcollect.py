@@ -1,17 +1,14 @@
 import struct
 import json
 import codecs
-import sys
 
 def ebcdic_to_ascii(ebcdic_bytes):
     return codecs.decode(ebcdic_bytes, 'cp1047')
 
 def read_dcollect_record(file):
-    # Read record length (first 2 bytes)
     length_bytes = file.read(2)
     if not length_bytes:
         return None  # End of file
-    
     record_length = struct.unpack('>H', length_bytes)[0]
     print(f"Debug: Record length read: {record_length}")
     
@@ -19,17 +16,91 @@ def read_dcollect_record(file):
         print(f"Error: Invalid record length: {record_length}")
         return None
     
-    # Read the rest of the record
-    try:
-        record_data = file.read(record_length - 2)
-    except ValueError as e:
-        print(f"Error reading record data: {e}")
-        return None
-    
-    # Parse record type (assuming it's in the first byte after length)
+    record_data = file.read(record_length - 2)
     record_type = struct.unpack('>B', record_data[:1])[0]
     
     return record_type, record_data
+
+def parse_dcollect_record(record_type, record_data):
+    parsed_record = {
+        'record_type': record_type,
+        'record_type_name': get_record_type_name(record_type)
+    }
+    
+    if record_type == 0:
+        parsed_record.update(parse_type_0(record_data))
+    elif record_type == 212:
+        parsed_record.update(parse_type_212(record_data))
+    elif record_type == 220:
+        parsed_record.update(parse_type_220(record_data))
+    else:
+        parsed_record['data'] = ebcdic_to_ascii(record_data[1:])
+    
+    return parsed_record
+
+def get_record_type_name(record_type):
+    record_types = {
+        0: 'Header',
+        1: 'Active Data Set',
+        2: 'Non-VSAM',
+        3: 'VSAM Base Cluster',
+        4: 'VSAM Alternate Index',
+        5: 'VSAM Path',
+        6: 'Generation Data Set',
+        7: 'Guaranteed Space',
+        8: 'Rolled-off GDS',
+        9: 'VSAM Volume',
+        10: 'SMS Volume Status',
+        11: 'SMS Storage Group',
+        12: 'SMS Management Class',
+        13: 'SMS Data Class',
+        14: 'SMS Storage Class',
+        15: 'Total DASD Capacity',
+        16: 'SMS Bound Data Class',
+        17: 'SMS Bound Management Class',
+        18: 'SMS Bound Storage Class',
+        19: 'Volume',
+        20: 'Migrated Data Set',
+        21: 'Tape Capacity',
+        22: 'Tape Volume',
+        23: 'Data Set Error',
+        24: 'DASD Volume Error',
+        25: 'SMS Storage Group Error',
+        26: 'Coupling Facility (CF) Cache Structure',
+        27: 'Coupling Facility (CF) Lock Structure',
+        212: 'VVDS Information',
+        220: 'Data Set Backup'
+    }
+    return record_types.get(record_type, 'Unknown')
+
+def parse_type_0(record_data):
+    # Header record
+    return {
+        'system_id': ebcdic_to_ascii(record_data[2:10]).strip(),
+        'time_stamp': struct.unpack('>Q', record_data[10:18])[0],
+        'sms_level': ebcdic_to_ascii(record_data[18:26]).strip()
+    }
+
+def parse_type_212(record_data):
+    # VVDS Information
+    return {
+        'volume_serial': ebcdic_to_ascii(record_data[2:8]).strip(),
+        'device_number': ebcdic_to_ascii(record_data[8:14]).strip(),
+        'vvds_name': ebcdic_to_ascii(record_data[14:58]).strip(),
+        'component_code': struct.unpack('>H', record_data[58:60])[0],
+        'number_of_ci': struct.unpack('>I', record_data[60:64])[0],
+        'ci_size': struct.unpack('>H', record_data[64:66])[0]
+    }
+
+def parse_type_220(record_data):
+    # Data Set Backup
+    return {
+        'dsname': ebcdic_to_ascii(record_data[2:46]).strip(),
+        'volume_serial': ebcdic_to_ascii(record_data[46:52]).strip(),
+        'backup_version_gen': struct.unpack('>I', record_data[52:56])[0],
+        'backup_version_date': struct.unpack('>I', record_data[56:60])[0],
+        'backup_version_time': struct.unpack('>I', record_data[60:64])[0]
+    }
 
 def process_dcollect(input_file, output_file):
     json_data = []
@@ -45,12 +116,7 @@ def process_dcollect(input_file, output_file):
                 record_type, record_data = record
                 record_count += 1
                 
-                # Simple parsing example - adjust based on actual DCOLLECT record formats
-                parsed_record = {
-                    'record_type': record_type,
-                    'data': ebcdic_to_ascii(record_data[1:])
-                }
-                
+                parsed_record = parse_dcollect_record(record_type, record_data)
                 json_data.append(parsed_record)
                 
                 if record_count % 1000 == 0:
@@ -58,7 +124,6 @@ def process_dcollect(input_file, output_file):
         
         print(f"Total records processed: {record_count}")
         
-        # Write JSON data to file
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(json_data, f, indent=2)
         
