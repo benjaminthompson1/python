@@ -26,5 +26,8 @@ print(dir(response))  # List all attributes and methods of the response object
 print("Standard Output:", response.stdout_response)
 print("Standard Error:", response.stderr_response)
 
+# Create an instance of the Dataset class
+ds = Dataset()
+
 # Print the High-Level Qualifier (HLQ) of the current user.
-print("High-Level Qualifier:", Dataset.hlq())
+print("High-Level Qualifier:", ds.hlq)
