@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 import sys
 import zoautil_py.opercmd as opercmd
-import zoautil_py.datasets as datasets
+from zoautil_py.datasets import Dataset
 
 # This script issues an operator command in a z/OS environment using the zoautil_py package.
 # It takes two command line arguments:
 # - command: The operator command to be issued (e.g., "d")
 # - parameters: The parameters for the operator command (e.g., "iplinfo")
-
 # Example usage:
 # python3 operator_command.py d iplinfo
 
@@ -28,4 +27,4 @@ print("Standard Output:", response.stdout_response)
 print("Standard Error:", response.stderr_response)
 
 # Print the High-Level Qualifier (HLQ) of the current user.
-print("High-Level Qualifier:", datasets.hlq())
+print("High-Level Qualifier:", Dataset.hlq())
