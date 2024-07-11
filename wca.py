@@ -3,7 +3,7 @@
 import zoslogs
 
 # Specify the path to the log file
-log_path = 'C:\Users\ZZ02Z5616\Downloads\SYSLOG.txt'
+log_path = '/dsfs/txt/ibmuser/syslog.outputd'
 
 # Create a ZosLogs object and pass the log file path
 log = zoslogs.ZosLogs(log_path)
