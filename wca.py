@@ -1,10 +1,14 @@
 # Assisted by WCA@IBM
-# Latest GenAI contribution: ibm/granite-20b-code-instruct-v2                 
+# Latest GenAI contribution: ibm/granite-20b-code-instruct-v2
 import zoslogs
 
-# Open a connection to the log file
-with zoslogs.open('/dsfs/txt/ibmuser/syslog.outputd') as logs:
-    # Read each line in the log file
-    for line in logs:
-        # Process the log line here (e.g., extract information, filter lines, etc.)
-        print(line)                                               
+# Specify the path to the log file
+log_path = 'C:\Users\ZZ02Z5616\Downloads\SYSLOG.txt'
+
+# Create a ZosLogs object and pass the log file path
+log = zoslogs.ZosLogs(log_path)
+
+# Iterate over the log messages
+for message in log:
+    # Print the message ID, job ID (if available), and message text
+    print(f"Message ID: {message.message_id}, Job ID: {message.job_id if message.job_id else 'N/A'}, Message: {message.message}")                               
