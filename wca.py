@@ -1,3 +1,5 @@
+# Assisted by WCA@IBM
+# Latest GenAI contribution: ibm/granite-20b-code-instruct-v2
 import re
 from datetime import datetime, timedelta
 from typing import List, Dict, Union
@@ -96,9 +98,9 @@ def display_records(records: List[Dict[str, Union[str, List[str]]]]) -> None:
         print(f"{record['record_type']} {record['system_identifier']} {record['date']} {time_str} {record['task']}\n{message}\n")
 
 def main() -> None:
-    syslog_file_path = '/dsfs/txt/ibmuser/syslog.outputd'  # Update with your SYSLOG file path
+    syslog_file = '/dsfs/txt/ibmuser/syslog.outputd'  # Update with your SYSLOG file path
 
-    syslog_data = process_syslog_file(syslog_file_path)
+    syslog_data = process_syslog_file(syslog_file)
     
     for record_type in ['X', 'N', 'M', 'W']:
         records = filter_records_by_type(syslog_data, record_type)
